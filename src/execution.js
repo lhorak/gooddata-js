@@ -70,14 +70,12 @@ export function getData(projectId, elements, executionConfiguration = {}) {
         }
     });
 
-    /*eslint-disable new-cap*/
-    const d = $.Deferred();
-    /*eslint-enable new-cap*/
-
     // Execute request
-    post('/gdc/internal/projects/' + projectId + '/experimental/executions', {
-        data: JSON.stringify(request)
-    }, d.reject).then(function resolveSimpleExecution(result) {
+    return post('/gdc/internal/projects/' + projectId + '/experimental/executions', {
+        body: JSON.stringify(request)
+    })
+    .then(r => r.json())
+    .then(function resolveSimpleExecution(result) {
         // TODO: when executionResult.headers will be globaly available columns map code should be removed
         if (result.executionResult.headers) {
             executedReport.headers = result.executionResult.headers;
@@ -103,15 +101,13 @@ export function getData(projectId, elements, executionConfiguration = {}) {
         }
         // Start polling on url returned in the executionResult for tabularData
         return ajax(result.executionResult.tabularDataResult);
-    }, d.reject).then(function resolveDataResultPolling(result, message, response) {
+    }).then(function resolveDataResultPolling(result) {
         // After the retrieving computed tabularData, resolve the promise
         executedReport.rawData = (result && result.tabularDataResult) ? result.tabularDataResult.values : [];
         executedReport.isLoaded = true;
         executedReport.isEmpty = (response.status === 204);
-        d.resolve(executedReport);
-    }, d.reject);
-
-    return d.promise();
+        return executedReport;
+    });
 }
 
 const MAX_TITLE_LENGTH = 255;
