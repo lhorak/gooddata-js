@@ -21,6 +21,7 @@ import fetch from 'isomorphic-fetch';
  * @module xhr
  * @class xhr
  */
+
 let tokenRequest;
 let xhrSettings; // TODO rename xhrSettings - "defaultXhrSettings?"
 
@@ -38,7 +39,7 @@ function enrichSettingWithCustomDomain(settings, domain) {
 }
 
 function continueAfterTokenRequest(url, settings) {
-    tokenRequest.then(response => {
+    return tokenRequest.then(response => {
         if (!response.ok) {
             throw new Error('Unauthorized');
         }
@@ -73,7 +74,11 @@ function handleUnauthorized(url, settings) {
             return response;
         });
     }
-    continueAfterTokenRequest(url, settings);
+    return continueAfterTokenRequest(url, settings);
+}
+
+function isLoginRequest(request) {
+    return request.url.indexOf('/gdc/account/login') !== -1;
 }
 
 export function ajax(url, settings = {}) {
@@ -82,15 +87,24 @@ export function ajax(url, settings = {}) {
         return continueAfterTokenRequest(originalRequest);
     }
 
-    const promise = fetch(originalRequest).then(response => {
+    return fetch(originalRequest).then(response => {
+        // If response.status id 401 and it was a login request there is no need
+        // to cycle back for token - login does not need token and this meand you
+        // are not authorized
         if (response.status === 401) {
-            handleUnauthorized(url, settings);
+            if (isLoginRequest(originalRequest)) {
+                throw new Error('Unauthorized');
+            }
+
+            return handleUnauthorized(url, settings);
+        }
+
+        if (response.status === 202) { // TODO add settings.dontPollOnResult
+            debugger;
         }
 
         return response;
     }); // TODO handle polling
-
-    return promise;
 }
 
 function createRequest(url, settings) {
