@@ -25,7 +25,6 @@ import 'isomorphic-fetch'
 const DEFAULT_POLL_DELAY = 1000;
 
 let tokenRequest;
-let xhrSettings; // TODO rename xhrSettings - "defaultXhrSettings?"
 
 function enrichSettingWithCustomDomain(url, settings, domain) {
     if (domain) {
@@ -149,29 +148,6 @@ function handlePolling(url, settings) {
         }, settings.pollDelay); // TODO add settings.pollDelay
     })
 }
-
-/**
- * additional ajax configuration specific for xhr module, keys
- *   unauthorized: function(xhr) - called when user is unathorized and token renewal failed
- *   pollDelay: int - polling interval in milisecodns, default 1000
-
- * method also accepts any option from original $.ajaxSetup. Options will be applied to all call of xhr.ajax().
-
- * xhrSetup behave similar tp $.ajaxSetup, each call replaces settings completely.
- * Options can be also passed to particular xhr.ajax calls (same as optios for $.ajax and $.ajaxSetup)
- * @method ajaxSetup
- */
-export function ajaxSetup(settings) {
-    xhrSettings = merge({
-        contentType: 'application/json',
-        dataType: 'json',
-        pollDelay: 1000,
-        headers: {
-            'Accept': 'application/json; charset=utf-8'
-        }
-    }, settings);
-}
-
 function xhrMethod(method) {
     return function methodFn(url, settings) {
         const opts = merge({ method }, settings);
@@ -197,7 +173,4 @@ export const post = xhrMethod('POST');
  * @method put
  */
 export const put = xhrMethod('PUT');
-
-// setup default settings
-ajaxSetup({});
 
