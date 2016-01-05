@@ -2,9 +2,9 @@
 import * as md from '../src/metadata';
 import fetchMock from 'fetch-mock';
 
-describe.only('metadata', () => {
+describe('metadata', () => {
     describe('with fake server', () => {
-        afterEach(function() {
+        afterEach(() => {
             fetchMock.restore();
         });
 

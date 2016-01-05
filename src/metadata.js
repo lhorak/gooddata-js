@@ -1,4 +1,5 @@
 // Copyright (C) 2007-2014, GoodData(R) Corporation. All rights reserved.
+import isPlainObject from 'lodash/lang/isPlainObject';
 import { ajax, get, post } from './xhr';
 import { getIn } from './util';
 
@@ -362,9 +363,6 @@ export function getObjectDetails(uri) {
  * @return {String} object identifier
  */
 export function getObjectIdentifier(uri) {
-    /*eslint-disable new-cap*/
-    const d = $.Deferred();
-    /*eslint-enable new-cap*/
     function idFinder(obj) {
         if (obj.attribute) {
             return obj.attribute.content.displayForms[0].meta.identifier;
@@ -377,13 +375,10 @@ export function getObjectIdentifier(uri) {
         throw Error('Unknown object!');
     }
 
-    if (!$.isPlainObject(uri)) {
-        getObjectDetails(uri).then(function resolveGetObjectDetails(data) { d.resolve(idFinder(data)); }, d.reject);
-    } else {
-        d.resolve(idFinder(uri));
+    if (!isPlainObject(uri)) {
+        return getObjectDetails(uri).then(data => idFinder(data));
     }
-
-    return d.promise();
+    return Promise.resolve(idFinder(uri));
 }
 
 /**

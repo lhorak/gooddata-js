@@ -10,12 +10,12 @@ describe('execution', () => {
     describe('with fake server', () => {
         let serverResponseMock;
 
-        afterEach(function() {
+        afterEach(() => {
             fetchMock.restore();
         });
 
         describe('Data Execution:', () => {
-            beforeEach(function() {
+            beforeEach(() => {
                 serverResponseMock = {
                     executionResult: {
                         columns: [
@@ -57,7 +57,7 @@ describe('execution', () => {
                         { status: 201, body: JSON.stringify({'tabularDataResult': {values: ['a', 1]}}) }
                     );
 
-                    return ex.getData('myFakeProjectId', ['attrId', 'metricId']).then(function(result) {
+                    return ex.getData('myFakeProjectId', ['attrId', 'metricId']).then((result) => {
                         expect(result.headers[0].id).to.be('attrId');
                         expect(result.headers[0].uri).to.be('attrUri');
                         expect(result.headers[0].type).to.be('attrLabel');
@@ -98,7 +98,7 @@ describe('execution', () => {
                         { status: 201, body: JSON.stringify({'tabularDataResult': {values: ['a', 1]}}) }
                     );
 
-                    return ex.getData('myFakeProjectId', ['attrId', 'metricId']).then(function(result) {
+                    return ex.getData('myFakeProjectId', ['attrId', 'metricId']).then((result) => {
                         expect(result.headers[0].id).to.be('attrId');
                         expect(result.headers[0].uri).to.be('attrUri');
                         expect(result.headers[0].type).to.be('attrLabel');
@@ -122,7 +122,7 @@ describe('execution', () => {
                         { status: 200, body: JSON.stringify('TEMPORARY_HACK') } // should be just 204, but see https://github.com/wheresrhys/fetch-mock/issues/36
                     );
 
-                    return ex.getData('myFakeProjectId', ['attrId', 'metricId']).then(function(result) {
+                    return ex.getData('myFakeProjectId', ['attrId', 'metricId']).then((result) => {
                         expect(result.rawData).to.eql([]);
 <<<<<<< d2a7c165595cfd48024d521deb4e4eda96db4bb1
                         expect(result.isEmpty).to.be(true);
@@ -177,7 +177,7 @@ describe('execution', () => {
                     ex.getData('myFakeProjectId', ['attrId', 'metricId'], {
                         filters: filters
                     });
-                    const [url, settings] = fetchMock.lastCall(matcher);
+                    const [, settings] = fetchMock.lastCall(matcher);
                     const requestBody = JSON.parse(settings.body);
 
                     expect(requestBody.execution.filters).to.eql(filters);
@@ -197,17 +197,14 @@ describe('execution', () => {
                             direction: 'desc'
                         }
                     ];
-                    let url;
-                    let settings;
-                    let requestBody;
-                    fetchMock.mock(matcher, 200)
+                    fetchMock.mock(matcher, 200);
 
                     ex.getData('myFakeProjectId', ['attrId', 'metricId'], {
                         orderBy: orderBy
                     });
 
-                    [url, settings] = fetchMock.lastCall(matcher);
-                    requestBody = JSON.parse(settings.body);
+                    const [, settings] = fetchMock.lastCall(matcher);
+                    const requestBody = JSON.parse(settings.body);
                     expect(requestBody.execution.orderBy).to.eql(orderBy);
                 });
             });
@@ -230,10 +227,8 @@ describe('execution', () => {
                         definitions: definitions
                     });
 
-                    /*eslint-disable vars-on-top*/
-                    const [url, settings] = fetchMock.lastCall(matcher);
+                    const [, settings] = fetchMock.lastCall(matcher);
                     const requestBody = JSON.parse(settings.body);
-                    /*eslint-enable vars-on-top*/
                     expect(requestBody.execution.definitions).to.eql(definitions);
                 });
             });
@@ -249,10 +244,8 @@ describe('execution', () => {
                     ex.getData('myFakeProjectId', ['attrId', 'metricId'], {
                         where: where
                     });
-                    /*eslint-disable vars-on-top*/
-                    const [url, settings] = fetchMock.lastCall(matcher);
+                    const [, settings] = fetchMock.lastCall(matcher);
                     const requestBody = JSON.parse(settings.body);
-                    /*eslint-enable vars-on-top*/
 
                     expect(requestBody.execution.where).to.eql(where);
                 });

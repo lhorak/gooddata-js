@@ -76,9 +76,9 @@ export function getData(projectId, elements, executionConfiguration = {}) {
     })
     .then(r => {
         if (!r.ok) {
-            throw new Error(`Request to ${r.url} failed, status: ${r.status}`)
+            throw new Error(`Request to ${r.url} failed, status: ${r.status}`);
         }
-        return r.json()
+        return r.json();
     })
     .then(function resolveSimpleExecution(result) {
         // TODO: when executionResult.headers will be globaly available columns map code should be removed
@@ -108,9 +108,9 @@ export function getData(projectId, elements, executionConfiguration = {}) {
         return ajax(result.executionResult.tabularDataResult);
     }).then(r => {
         if (!r.ok) {
-            throw new Error(`Request to ${r.url} failed, status: ${r.status}`)
+            throw new Error(`Request to ${r.url} failed, status: ${r.status}`);
         }
-        return r.json()
+        return r.json();
     }).then(function resolveDataResultPolling(result) {
         // After the retrieving computed tabularData, resolve the promise
         executedReport.rawData = (result && result.tabularDataResult) ? result.tabularDataResult.values : [];
