@@ -124,14 +124,6 @@ describe('execution', () => {
 
                     return ex.getData('myFakeProjectId', ['attrId', 'metricId']).then((result) => {
                         expect(result.rawData).to.eql([]);
-<<<<<<< d2a7c165595cfd48024d521deb4e4eda96db4bb1
-                        expect(result.isEmpty).to.be(true);
-                        done();
-                    }, function() {
-                        expect().fail('Should resolve with empty data');
-                        done();
-=======
->>>>>>> Execution module uses fetch
                     });
                 });
 

@@ -1,5 +1,4 @@
 // Copyright (C) 2007-2014, GoodData(R) Corporation. All rights reserved.
-import $ from 'jquery';
 import md5 from 'md5';
 
 import {
@@ -115,7 +114,7 @@ export function getData(projectId, elements, executionConfiguration = {}) {
         // After the retrieving computed tabularData, resolve the promise
         executedReport.rawData = (result && result.tabularDataResult) ? result.tabularDataResult.values : [];
         executedReport.isLoaded = true;
-        executedReport.isEmpty = (response.status === 204);
+        executedReport.isEmpty = (result.status === 204);
         return executedReport;
     });
 }
